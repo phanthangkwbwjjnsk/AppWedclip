@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Trick Tiger Optimaze</title>
+  <style>
+    body {
+      margin: 0;
+      background: #0b0c1a;
+      color: #fff;
+      font-family: 'Segoe UI', sans-serif;
+      overflow-x: hidden;
+    }
+
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 0;
+    }
+
+    h2 {
+      text-align: center;
+      color: #00ffff;
+      margin: 30px 0;
+      font-size: 24px;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 500px;
+      margin: auto;
+      position: relative;
+      z-index: 2;
+    }
+
+    .toggle-box {
+      background: #101224;
+      border-radius: 12px;
+      padding: 15px 20px;
+      margin: 15px 0;
+      box-shadow: 0 0 15px #00ffff33;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: 0.3s;
+    }
+
+    .toggle-box:hover {
+      box-shadow: 0 0 20px #00ffff99;
+    }
+
+    .toggle-box span {
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 24px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0;
+      right: 0; bottom: 0;
+      background-color: #444;
+      transition: .4s;
+      border-radius: 24px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: #00ffff;
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(26px);
+    }
+
+    #notify {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #00ffff;
+      color: #000;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: bold;
+      display: none;
+      z-index: 999;
+      animation: fadein 0.4s;
+    }
+
+    @keyframes fadein {
+      from { opacity: 0; bottom: 10px; }
+      to { opacity: 1; bottom: 20px; }
+    }
+
+    .vibrate {
+      animation: vibrate 0.2s linear 2;
+    }
+
+    @keyframes vibrate {
+      0% { transform: translateX(0); }
+      25% { transform: translateX(-3px); }
+      50% { transform: translateX(3px); }
+      75% { transform: translateX(-2px); }
+      100% { transform: translateX(0); }
+    }
+  </style>
+</head>
+<body>
+<canvas id="effect"></canvas>
+<h2>🛠️ Trick Tiger Optimaze</h2>
+<div class="container">
+  <div class="toggle-box"><span>🎯 AimLock X</span>
+    <label class="switch"><input type="checkbox" onchange="toggleNotify(this, 'AimLock X')"><span class="slider"></span></label>
+  </div>
+  <div class="toggle-box"><span>🔧 RecoilFix</span>
+    <label class="switch"><input type="checkbox" onchange="toggleNotify(this, 'RecoilFix')"><span class="slider"></span></label>
+  </div>
+  <div class="toggle-box"><span>📁 DplConfig</span>
+    <label class="switch"><input type="checkbox" onchange="toggleNotify(this, 'DplConfig')"><span class="slider"></span></label>
+  </div>
+  <div class="toggle-box"><span>⚙️ Setup Config</span>
+    <label class="switch"><input type="checkbox" onchange="toggleNotify(this, 'Setup Config')"><span class="slider"></span></label>
+  </div>
+  <div class="toggle-box"><span>🎯 AimHead</span>
+    <label class="switch"><input type="checkbox" onchange="toggleNotify(this, 'AimHead')"><span class="slider"></span></label>
+  </div>
+  <div class="toggle-box"><span>👁️ HeadVision FPS</span>
+    <label class="switch"><input type="checkbox" onchange="toggleNotify(this, 'HeadVision FPS')"><span class="slider"></span></label>
+  </div>
+</div>
+
+<div id="notify"></div>
+
+<script>
+  const notify = document.getElementById('notify');
+  function toggleNotify(el, name) {
+    let state = el.checked ? 'Đã Bật ✅' : 'Đã Tắt ❌';
+    notify.innerText = `${name} ${state}`;
+    notify.style.display = 'block';
+    notify.classList.add("vibrate");
+
+    setTimeout(() => {
+      notify.style.display = 'none';
+      notify.classList.remove("vibrate");
+    }, 2000);
+  }
+
+  const canvas = document.getElementById("effect");
+  const ctx = canvas.getContext("2d");
+  let w, h, points = [];
+
+  function resize() {
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+    points = [];
+    for (let i = 0; i < 90; i++) {
+      points.push({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        vx: (Math.random() - 0.5) * 0.6,
+        vy: (Math.random() - 0.5) * 0.6
+      });
+    }
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+    for (let i = 0; i < points.length; i++) {
+      let p = points[i];
+      p.x += p.vx;
+      p.y += p.vy;
+      if (p.x < 0 || p.x > w) p.vx *= -1;
+      if (p.y < 0 || p.y > h) p.vy *= -1;
+
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
+      ctx.fillStyle = "#0ff";
+      ctx.fill();
+
+      for (let j = i + 1; j < points.length; j++) {
+        let q = points[j];
+        let dx = p.x - q.x;
+        let dy = p.y - q.y;
+        let dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 120) {
+          ctx.beginPath();
+          ctx.moveTo(p.x, p.y);
+          ctx.lineTo(q.x, q.y);
+          ctx.strokeStyle = "rgba(0,255,255," + (1 - dist / 120) + ")";
+          ctx.stroke();
+        }
+      }
+    }
+    requestAnimationFrame(draw);
+  }
+
+  resize();
+  draw();
+  window.onresize = resize;
+</script>
+</body>
+</html>
